@@ -1,0 +1,1 @@
+# WHYPE Discord Bot

@@ -1,1 +1,1 @@
-# WHYPE Discord Bot
+# WHYPE Discord Bot (WIP)

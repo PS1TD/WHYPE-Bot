@@ -4,7 +4,10 @@ const fs = require("node:fs")
 const { Client, Collection, Intents } = require("discord.js")
 
 // Create a new client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
+const client = new Client({
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES],
+	partials: ["GUILD_MEMBER", "GUILD_MESSAGES"],
+})
 
 client.commands = new Collection()
 const commandFiles = fs.readdirSync("./commands").filter((file) => file.endsWith(".js"))

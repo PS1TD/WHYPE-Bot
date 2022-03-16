@@ -15,7 +15,7 @@ module.exports = {
 		let userName = newMember.user.username.toLowerCase()
 
 		if (newMember._roles.includes(roleId)) {
-			let newChannel = await category.createChannel(userName)
+			let newChannel = await category.createChannel(userName, { topic: newMember.user.id })
 
 			let outputEmbed = {
 				color: role.hexColor,

@@ -24,7 +24,7 @@ module.exports = {
 
 				if (!reviewChannelNames.includes(userName)) {
 					createdChannelAmount++
-					let newChannel = await category.createChannel(userName)
+					let newChannel = await category.createChannel(userName, { topic: member.user.id })
 					embedFields.push({
 						name: `${member.nickname && `${member.nickname} | `}${member.user.tag}`,
 						value: `<#${newChannel.id}>`,

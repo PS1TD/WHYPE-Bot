@@ -1,17 +1,56 @@
+const { roleId, messageBoxId, categoryId } = require("../config.json")
+
+function sleep(ms) {
+	return new Promise((r) => setTimeout(r, ms))
+}
+
 module.exports = {
 	name: "messageCreate",
 	async execute(message) {
-		let category = message.guild.channels.cache.get("953453092500819969")
+		await message.guild.channels.fetch()
 
-		let reviewBox = category.children.get("953454471894155294")
+		let category = message.guild.channels.cache.get(categoryId)
 
-		if (message.channel.parentId === "953453092500819969" && message.channel.id !== "953454471894155294") {
-			console.log(message.content)
-			await reviewBox.send(
-				`Trial: ${message.channel.name}\nReviewer: ${message.author.username}\nContent: ${message.content}`
-			)
+		let messageBox = category.children.get(messageBoxId)
+
+		if (
+			message.channel.parentId === categoryId &&
+			message.channel.id !== messageBoxId &&
+			message.author.id !== "952786501303951370"
+		) {
+			let outputEmbed = {
+				color: "#4BB543",
+				title: `New trial review!`,
+				fields: [
+					{
+						name: "Trial",
+						value: message.channel.name,
+						inline: true,
+					},
+					{
+						name: "Reviwer",
+						value: message.author.username,
+						inline: true,
+					},
+					{
+						name: "Content",
+						value: message.content,
+					},
+				],
+				thumbnail: {
+					url: message.author.displayAvatarURL(),
+				},
+			}
+
+			await messageBox.send({ embeds: [outputEmbed] })
+
+			let reply = await message.reply({ content: "Thank you for submitting your review!" })
 
 			await message.delete()
+
+			await sleep(3000)
+
+			await reply.delete()
 		}
 	},
 }

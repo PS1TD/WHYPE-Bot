@@ -11,7 +11,13 @@ module.exports = {
 			await command.execute(interaction)
 		} catch (error) {
 			console.error(error)
-			await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true })
+
+			const outputEmbed = {
+				color: "#D9534F",
+				title: `There was an error while executing this command!`,
+			}
+
+			await interaction.reply({ embeds: [outputEmbed], ephemeral: true })
 		}
 	},
 }

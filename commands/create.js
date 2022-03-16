@@ -1,34 +1,44 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
+const { roleId, categoryId } = require("../config.json")
 
 module.exports = {
 	data: new SlashCommandBuilder().setName("create").setDescription("Creates channels for every trial!"),
 	async execute(interaction) {
-		// console.log(interaction.member.guild.roles.cache)
+		await interaction.guild.members.fetch()
+		await interaction.guild.roles.fetch()
+		await interaction.guild.channels.fetch()
 
-		let members = interaction.member.guild.roles.cache.get("670868788337573908").members
+		let role = interaction.guild.roles.cache.get(roleId)
 
-		// console.log(members)
+		let category = interaction.guild.channels.cache.get(categoryId)
 
-		let category = interaction.member.guild.channels.cache.get("953453092500819969")
+		let reviewChannelNames = category.children.map((channel) => channel.name)
 
-		let reviewChannels = interaction.member.guild.channels.cache.get("953453092500819969").children
-		// console.log(reviewChannels)
+		let createdChannelAmount = 0
 
-		let reviewChannelNames = reviewChannels.map((channel) => channel.name)
+		let embedFields = []
 
-		console.log(reviewChannelNames)
+		await Promise.all(
+			role.members.map(async (member) => {
+				let userName = member.user.username.toLowerCase()
 
-		members.forEach((member) => {
-			let userName = member.user.username.toLowerCase()
+				if (!reviewChannelNames.includes(userName)) {
+					createdChannelAmount++
+					let newChannel = await category.createChannel(userName)
+					embedFields.push({
+						name: `${member.nickname && `${member.nickname} | `}${member.user.tag}`,
+						value: `<#${newChannel.id}>`,
+					})
+				}
+			})
+		)
 
-			if (!reviewChannelNames.includes(userName)) {
-				console.log(`Create channel for user: ${member.user.username}`)
-				category.createChannel(userName)
-			} else {
-				console.log(`Channel for user: ${member.user.username} already exists`)
-			}
-		})
+		const outputEmbed = {
+			color: "#4BB543",
+			title: `Created ${createdChannelAmount} channels!`,
+			fields: embedFields,
+		}
 
-		return interaction.reply("blah")
+		return interaction.reply({ embeds: [outputEmbed] })
 	},
 }

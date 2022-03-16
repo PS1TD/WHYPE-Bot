@@ -1,14 +1,29 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
+const { roleId } = require("../config.json")
 
 module.exports = {
-	data: new SlashCommandBuilder().setName("list").setDescription("Lists users with trial role!"),
+	data: new SlashCommandBuilder().setName("list").setDescription("Lists members with trial role!"),
 	async execute(interaction) {
-		// console.log(interaction.member.guild.roles.cache)
+		await interaction.guild.members.fetch()
+		await interaction.guild.roles.fetch()
 
-		let memberIds = interaction.member.guild.roles.cache
-			.get("670868788337573908")
-			.members.map((member) => member.user.id)
+		let role = interaction.guild.roles.cache.get(roleId)
 
-		return interaction.reply(memberIds.toString())
+		let outputEmbeds = []
+
+		role.members.map((member) => {
+			outputEmbeds.push({
+				color: role.hexColor,
+				title: `${member.nickname ? `${member.nickname}` : `${member.user.username}`}`,
+				description: `${member.user.tag}`,
+				thumbnail: {
+					url: member.user.displayAvatarURL(),
+				},
+			})
+		})
+
+		console.log(role.members)
+
+		return interaction.reply({ embeds: outputEmbeds })
 	},
 }

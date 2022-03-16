@@ -25,6 +25,19 @@ module.exports = {
 				if (!reviewChannelNames.includes(userName)) {
 					createdChannelAmount++
 					let newChannel = await category.createChannel(userName, { topic: member.user.id })
+
+					let infoEmbed = {
+						color: "#0E86D4",
+						title: `${member.nickname && `${member.nickname} | `}${member.user.tag} review channel.`,
+						description:
+							"Just write your review below and it will get sent to staff. (Trials and other Raiders cannot see your message!)",
+						thumbnail: {
+							url: member.user.displayAvatarURL(),
+						},
+					}
+
+					await newChannel.send({ embeds: [infoEmbed] })
+
 					embedFields.push({
 						name: `${member.nickname && `${member.nickname} | `}${member.user.tag}`,
 						value: `<#${newChannel.id}>`,

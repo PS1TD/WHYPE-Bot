@@ -17,6 +17,18 @@ module.exports = {
 		if (newMember._roles.includes(roleId)) {
 			let newChannel = await category.createChannel(userName, { topic: newMember.user.id })
 
+			let infoEmbed = {
+				color: "#0E86D4",
+				title: `${newMember.nickname && `${newMember.nickname} | `}${newMember.user.tag} review channel.`,
+				description:
+					"Just write your review below and it will get sent to staff. (Trials and other Raiders cannot see your message!)",
+				thumbnail: {
+					url: newMember.user.displayAvatarURL(),
+				},
+			}
+
+			await newChannel.send({ embeds: [infoEmbed] })
+
 			let outputEmbed = {
 				color: role.hexColor,
 				title: `New ${role.name} member detected: ${

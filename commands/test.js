@@ -1,20 +1,27 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
-const { roleId } = require("../config.json")
+const fs = require("fs")
+const path = require("path")
 
 module.exports = {
-	data: new SlashCommandBuilder().setName("test").setDescription("Test command description"),
+	data: new SlashCommandBuilder()
+		.setName("test")
+		.setDescription("Test command description")
+		.addChannelOption((option) =>
+			option.setName("channel").setDescription("Select a channel with #").setRequired(true)
+		),
 	async execute(interaction) {
-		await interaction.guild.members.fetch()
-		await interaction.guild.roles.fetch()
+		let configPath = path.resolve(__dirname, "../config.json")
+		let rawdata = fs.readFileSync(configPath)
+		let config = JSON.parse(rawdata)
 
-		// let role = await interaction.guild.roles.fetch(roleId, { cache: true, force: true })
+		config.test = "HELLOTHERE?"
 
-		// let role = interaction.guild.roles.cache.get(roleId) || (await interaction.guild.roles.fetch(roleId))
+		let data = JSON.stringify(config, null, 4)
+		fs.writeFileSync(configPath, data)
 
-		// console.log(role)
+		const channel = interaction.options.getChannel("channel")
 
-		// console.log(interaction.member.guild.roles.cache.get(roleId).members)
-
+		console.log(channel.id)
 		return interaction.reply("Interaction reply")
 	},
 }

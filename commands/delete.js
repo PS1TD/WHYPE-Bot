@@ -1,18 +1,20 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
-const { categoryId, messageBoxId } = require("../config.json")
 
 module.exports = {
 	data: new SlashCommandBuilder().setName("delete").setDescription("Deletes channels for all trials!"),
 	async execute(interaction) {
+		let rawdata = fs.readFileSync(path.resolve(__dirname, "../config.json"))
+		let config = JSON.parse(rawdata)
+
 		await interaction.guild.channels.fetch()
 
-		let category = interaction.guild.channels.cache.get(categoryId)
+		let category = interaction.guild.channels.cache.get(config.categoryId)
 
 		let deletedChannelAmount = 0
 
 		await Promise.all(
 			category.children.map(async (channel) => {
-				if (channel.id !== messageBoxId) {
+				if (channel.id !== config.messageBoxId) {
 					await channel.delete()
 					deletedChannelAmount++
 				}

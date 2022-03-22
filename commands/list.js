@@ -1,13 +1,15 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
-const { roleId } = require("../config.json")
 
 module.exports = {
 	data: new SlashCommandBuilder().setName("list").setDescription("Lists members with trial role!"),
 	async execute(interaction) {
+		let rawdata = fs.readFileSync(path.resolve(__dirname, "../config.json"))
+		let config = JSON.parse(rawdata)
+
 		await interaction.guild.members.fetch()
 		await interaction.guild.roles.fetch()
 
-		let role = interaction.guild.roles.cache.get(roleId)
+		let role = interaction.guild.roles.cache.get(config.roleId)
 
 		let outputEmbeds = []
 
@@ -21,9 +23,6 @@ module.exports = {
 				},
 			})
 		})
-
-		console.log(role.members)
-
 		return interaction.reply({ embeds: outputEmbeds })
 	},
 }

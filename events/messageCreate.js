@@ -1,4 +1,5 @@
-const { messageBoxId, categoryId } = require("../config.json")
+const fs = require("fs")
+const path = require("path")
 
 function sleep(ms) {
 	return new Promise((r) => setTimeout(r, ms))
@@ -7,20 +8,24 @@ function sleep(ms) {
 module.exports = {
 	name: "messageCreate",
 	async execute(message) {
+		let configPath = path.resolve(__dirname, "../config.json")
+		let rawdata = fs.readFileSync(configPath)
+		let config = JSON.parse(rawdata)
+
 		await message.guild.channels.fetch()
 		await message.guild.members.fetch()
 
-		let category = message.guild.channels.cache.get(categoryId)
+		let category = message.guild.channels.cache.get(config.categoryId)
 
 		let trialId = message.channel.topic
 
 		let trial = message.guild.members.cache.get(trialId)
 
-		let messageBox = category.children.get(messageBoxId)
+		let messageBox = category.children.get(config.messageBoxId)
 
 		if (
-			message.channel.parentId === categoryId &&
-			message.channel.id !== messageBoxId &&
+			message.channel.parentId === config.categoryId &&
+			message.channel.id !== config.messageBoxId &&
 			message.author.id !== message.client.user.id
 		) {
 			let outputEmbed = {

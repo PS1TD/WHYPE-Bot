@@ -1,5 +1,8 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
 
+const fs = require("fs")
+const path = require("path")
+
 module.exports = {
 	data: new SlashCommandBuilder().setName("delete").setDescription("Deletes channels for all trials!"),
 	async execute(interaction) {

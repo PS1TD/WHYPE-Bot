@@ -1,20 +1,25 @@
-const { categoryId, roleId, botChannelId } = require("../config.json")
+const fs = require("fs")
+const path = require("path")
 
 module.exports = {
 	name: "guildMemberUpdate",
 	async execute(oldMember, newMember) {
+		let configPath = path.resolve(__dirname, "../config.json")
+		let rawdata = fs.readFileSync(configPath)
+		let config = JSON.parse(rawdata)
+
 		await newMember.guild.channels.fetch()
 		await newMember.guild.roles.fetch()
 
-		let category = newMember.guild.channels.cache.get(categoryId)
+		let category = newMember.guild.channels.cache.get(config.categoryId)
 
-		let role = newMember.guild.roles.cache.get(roleId)
+		let role = newMember.guild.roles.cache.get(config.roleId)
 
-		let botChannel = newMember.guild.channels.cache.get(botChannelId)
+		let botChannel = newMember.guild.channels.cache.get(config.botChannelId)
 
 		let userName = newMember.user.username.toLowerCase()
 
-		if (newMember._roles.includes(roleId)) {
+		if (newMember._roles.includes(config.roleId)) {
 			let newChannel = await category.createChannel(userName, { topic: newMember.user.id })
 
 			let infoEmbed = {

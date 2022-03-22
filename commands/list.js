@@ -1,5 +1,8 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
 
+const fs = require("fs")
+const path = require("path")
+
 module.exports = {
 	data: new SlashCommandBuilder().setName("list").setDescription("Lists members with trial role!"),
 	async execute(interaction) {
